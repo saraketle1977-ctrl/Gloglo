@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dino Game</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #f7f7f7;
+  }
+
+  #game {
+    width: 100%;
+    height: 200px;
+    border-bottom: 3px solid black;
+    position: relative;
+  }
+
+  #dino {
+    width: 40px;
+    height: 40px;
+    background: green;
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+  }
+
+  #cactus {
+    width: 20px;
+    height: 40px;
+    background: darkgreen;
+    position: absolute;
+    bottom: 0;
+    right: -20px;
+    animation: moveCactus 2s linear infinite;
+  }
+
+  @keyframes moveCactus {
+    0% { right: -20px; }
+    100% { right: 100%; }
+  }
+
+  .jump {
+    animation: jump 0.5s;
+  }
+
+  @keyframes jump {
+    0% { bottom: 0; }
+    50% { bottom: 100px; }
+    100% { bottom: 0; }
+  }
+
+  #score {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-family: Arial;
+    font-size: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div id="game">
+  <div id="dino"></div>
+  <div id="cactus"></div>
+  <div id="score">0</div>
+</div>
+
+<script>
+  const dino = document.getElementById("dino");
+  const cactus = document.getElementById("cactus");
+  const scoreText = document.getElementById("score");
+
+  let score = 0;
+
+  function jump() {
+    if (!dino.classList.contains("jump")) {
+      dino.classList.add("jump");
+      setTimeout(() => {
+        dino.classList.remove("jump");
+      }, 500);
+    }
+  }
+
+  // Pulo com teclado
+  document.addEventListener("keydown", function(event) {
+    if (event.code === "Space") {
+      jump();
+    }
+  });
+
+  // Pulo com toque na tela
+  document.addEventListener("touchstart", function() {
+    jump();
+  });
+
+  // Também funciona com clique (caso teste no PC)
+  document.addEventListener("click", function() {
+    jump();
+  });
+
+  let checkDead = setInterval(function() {
+    let dinoTop = parseInt(window.getComputedStyle(dino).getPropertyValue("bottom"));
+    let cactusLeft = parseInt(window.getComputedStyle(cactus).getPropertyValue("right"));
+
+    if (cactusLeft > window.innerWidth - 90 && cactusLeft < window.innerWidth - 50 && dinoTop < 40) {
+      alert("Game Over! Pontuação: " + score);
+      score = 0;
+    } else {
+      score++;
+      scoreText.innerHTML = score;
+    }
+  }, 100);
+</script>
+
+</body>
+</html>
